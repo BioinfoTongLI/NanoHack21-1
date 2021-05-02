@@ -14,7 +14,7 @@ Inspired by https://github.com/imjoy-team/example-plugins/blob/master/imjoy-plug
     "ui": "",
     "version": "0.0.1",
     "api_version": "0.0.1",
-    "description": "Visulization of 2D/3D UMAP dot plot and ROI images associated",
+    "description": "Visulization of 2D/3D UMAP dot plot and ROI images associated. Developed by Anna Arutyunyan, Jordan Simbananiye and Tong LI.",
     "icon": "photo",
     "inputs": null,
     "outputs": null,
@@ -51,8 +51,8 @@ class ImJoyPlugin {
             images: [],
             selected_table: null,
             tables: {
-                "2D": "https://gist.githubusercontent.com/BioinfoTongLI/dc266bb21ffa4a7d8e45b86121d9a1cd/raw/a5de5d368d5f27b4bf2c025df0fb096215d99001/table_for_visualisation_ROIs.csv",
-                "3D": "https://gist.githubusercontent.com/BioinfoTongLI/dc266bb21ffa4a7d8e45b86121d9a1cd/raw/d61c95f79dd65f145db268ebaaba022488d5a23d/table_for_visualisation_ROIs.csv",
+                "2D": "https://github.com/arutik/NanoHack21/blob/readme_tong/data/table_for_visualisation_ROIs_2D.csv",
+                "3D": "https://github.com/arutik/NanoHack21/blob/readme_tong/data/table_for_visualisation_ROIs_3D.csv",
             },
             current_index: 0,
             loading: true,
@@ -122,19 +122,19 @@ class ImJoyPlugin {
                 async selectTabById(evt, identifier) {
                     // Declare all variables
                     var i, tabcontent, tablinks;
-    
+
                     // Get all elements with class="tabcontent" and hide them
                     tabcontent = document.getElementsByClassName("tabcontent");
                     for (i = 0; i < tabcontent.length; i++) {
                         tabcontent[i].style.display = "none";
                     }
-    
+
                     // Get all elements with class="tablinks" and remove the class "active"
                     tablinks = document.getElementsByClassName("tablinks");
                     for (i = 0; i < tablinks.length; i++) {
                         tablinks[i].className = tablinks[i].className.replace(" active", "");
                     }
-    
+
                     // Show the current tab, and add an "active" class to the button that opened the tab
                     document.getElementById(identifier).style.display = "block";
                     evt.currentTarget.className += " active";
@@ -157,7 +157,7 @@ class ImJoyPlugin {
                                 type: 'bar'
                             }
                         )}
-                    
+
                     }
 
                     return stackData
@@ -172,7 +172,7 @@ class ImJoyPlugin {
                     var stackedDataPoints = await this.rowToPlotlyPoints(currentImageData.meta)
 
                     var layout = {barmode: 'stack'}
-                    var barPlot =  await Plotly.newPlot( cellTypeDeconv, stackedDataPoints, layout, {responsive: true});   
+                    var barPlot =  await Plotly.newPlot( cellTypeDeconv, stackedDataPoints, layout, {responsive: true});
                 }
             }
         })
@@ -307,7 +307,7 @@ class ImJoyPlugin {
           "glomerulus": "#009e9e",
           "proximal tubule": "#9c27b0"
         };
-        
+
         const data = [{
             type: dataObj.z_3d_umap ? "scatter3d" : "scattergl",
             mode: "markers",
@@ -342,8 +342,8 @@ api.export(new ImJoyPlugin())
                 <div class="btn-group btn-group-block">
                     <button @click="loadTable('2D')" class="btn" :class="{'btn-primary': selected_table==='2D'}">2D</button>
                     <button @click="loadTable('3D')" class="btn" :class="{'btn-primary': selected_table==='3D'}">3D</button>
-                </div> 
-                
+                </div>
+
             </section>
             </header>
             <div class="container">
@@ -358,34 +358,34 @@ api.export(new ImJoyPlugin())
                           <button class="tablinks" @click="selectTabById(event, 'StatsSummary')">Stats Summary</button>
                           <button class="tablinks" @click="selectTabById(event, 'cellTypeDeconv')">Cell Type Deconvolution</button>
                         </div>
-        
+
                         <!-- Tab content -->
                         <div id="StatsSummary" class="tabcontent">
                             <h3>{{images[current_index].meta['region']}} ({{images[current_index].meta['segmentLabel']}})</h3>
                             <p>Segmetation label: {{images[current_index].meta['segmentLabel']}}</p>
                             <p>Region: {{images[current_index].meta['region']}}</p>
                             <p>Exact location: {{images[current_index].meta['region_exact']}}</p>
-                            <p>Image id: {{ images[current_index].meta.image_file_name}} </p>          
+                            <p>Image id: {{ images[current_index].meta.image_file_name}} </p>
                         </div>
-        
+
                         <div id="cellTypeDeconv" class="tabcontent" style="width:inherit;height:inherit;"></div>
                 </div>
                 <h2 v-else>
                     <br>
                     Click on the UMAP to see the sample image.
                 </h2>
-                
+
                 <div class="carousel">
                 <!-- carousel locator -->
                 <input class="carousel-locator" v-for="(img, i) in images" :id="'slide-'+i" type="radio" name="carousel-radio" hidden="" v-model="current_index" :value="i" checked="">
-                
+
                 <!-- carousel container -->
                 <div class="carousel-container">
                     <!-- carousel item -->
                     <figure class="carousel-item" v-for="(img, i) in images">
                         <img class="img-responsive rounded" :src="img.url" :alt="img.meta.image_file_name" @click="openImage(images[current_index].url)">
                     </figure>
-    
+
                 </div>
                 <!-- carousel navigation -->
                 <div class="carousel-nav">
@@ -396,9 +396,9 @@ api.export(new ImJoyPlugin())
         </div>
         </div>
         </div>
-    
+
     </window>
-    
+
     <style lang="css">
     #chart {
         width: 800px;
@@ -412,11 +412,11 @@ api.export(new ImJoyPlugin())
         height: 400px;
         max-width: 100%;
     }
-    
+
     .carousel{
         margin: 20px;
     }
-    
+
     .hpa-thumbnail{
         position: absolute;
         left: 30px;
@@ -429,14 +429,14 @@ api.export(new ImJoyPlugin())
       height: 500px;
       width: 600px
     }
-    
+
     /* Style the tab */
     .tab {
       overflow: hidden;
       border: 1px solid #ccc;
       background-color: #f1f1f1;
     }
-    
+
     /* Style the buttons that are used to open the tab content */
     .tab button {
       background-color: inherit;
@@ -447,17 +447,17 @@ api.export(new ImJoyPlugin())
       padding: 14px 16px;
       transition: 0.3s;
     }
-    
+
     /* Change background color of buttons on hover */
     .tab button:hover {
       background-color: #ddd;
     }
-    
+
     /* Create an active/current tablink class */
     .tab button.active {
       background-color: #ccc;
     }
-    
+
     /* Style the tab content */
     .tabcontent {
       display: none;
