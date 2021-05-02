@@ -83,6 +83,12 @@ To explore cell-cell communication networks dysregulated in abnormal glomeruli w
 - Interaction network of communication events upregulated in abnormal glomeruli - [here](https://github.com/arutik/NanoHack21/blob/main/Analysis/3_Cell-cell_comm_analysis/nx_upreg.html)
 - Interaction network of communication events downregulated in abnormal glomeruli - [here](https://github.com/arutik/NanoHack21/blob/main/Analysis/3_Cell-cell_comm_analysis/nx_downreg.html)
 
+You can highlight a network of communication events that involves a certain cell type by clicking the node with that cell type in the title like so:
+![](./data/graph_2.png)
+
+You can also clink on a specific edge connecting a pair of cell types and view the dysregulated interactions like so:
+![](./data/graph_1.png)
+
 ____________________________________________________________________________________________________________________________________________________________________
 
 Our approach offers a user-friendly analysis and visualisation workflow that has flexibility in choice of parameters and helps explore and understand the data better to facilitate exciting biological discoveries. 
