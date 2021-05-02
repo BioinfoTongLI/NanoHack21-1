@@ -2,15 +2,13 @@ name: nanostring-hack-2021
 channels:
   - conda-forge
   - defaults
-  - ome/label/pre
 dependencies:
   - python=3.8
-  - bioformats2raw
   - dask-image
   - numpy
   - xarray
   - scikit-image
-  - pip
   - zarr
   - pip:
-    - -r file:vizarr/example/requirements.txt
+    - cellphonedb
+    - pyvis
