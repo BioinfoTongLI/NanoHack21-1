@@ -15,9 +15,33 @@ To perform the analyses included in this solution, the user will need to provide
 - Signle cell RNA sequencing (scRNA-seq) reference dataset of human kidney from [Young et al., Science 2018](https://science.sciencemag.org/content/361/6402/594.editor-summary) (or other scRNA-seq reference dataset)
 
 
-## 1.
+## 1. Data preparation
+### 1. Image data preprocessing
 
-## 2.
+For better user experience when browsing the image datas, all ROI images (.png) were first downsample by a factor of four in each dimension. These downsampled images were then uploaded to our temporary server (https://nanohack21storage.blob.core.windows.net) for this hackathon. Ideally the image data should be hosted on servers such as Bioimage Archive (https://www.ebi.ac.uk/bioimage-archive/). In that case, no data compression is needed.
+
+### 2. UMAP generation
+
+Based on transcriptomic data, we’ve generated both 2D and 3D UMAPs using Scanpy (https://scanpy.readthedocs.io/en/stable/) and Anndata (https://anndata.readthedocs.io/en/latest/) packages in Python (see details in `Analysis/1_transcriptome_analysis.ipynb`). For all dots in the UMAP, their corresponding image names are saved as a column inside the csv files (2D and 3D). These CSV files are in the `data` directory and wil be read remotely by our ImJoy plugin.
+
+
+## 2. ImJoy plugin
+
+Interactive data exploration will largely facilitate, or even change  the way we interpret the data. Especially for imaging datas from microscopes, the extracted tabular datas often don’t capture all information and may lead to biased interpretation. Making raw data easily browsable along with other statistical analysis is the way to avoid such pitfalls. To make that possible, we have developed an ImJoy plugin to not only visualize the UMAP that was generated from the transcriptomics data, but also to visually assess the microscopy images associated with each entry.
+
+### Demo
+
+In order to run our plugin, first, you need to go the ImJoy website (https://imjoy.io/#/) and select the `start imjoy` button.
+Once into the ImJoy app interface:
+
+![](./data/imjoy_plugin_installation.png)
+
+1. Click on `+ PLUGINS` section
+2. Add the path to our plugin (https://github.com/arutik/NanoHack21/blob/main/Nanostring_hack_21.imjoy.html) and Tape `enter`
+3. Click on `install` in the prompted plugin description below.
+
+Once installed, click on the plugin name to lanuch it. By default, it will create an Mybinder server and use it as the backend.
+PS: the CSVs we generated and the images associated are hosted on our personal servers and the URLs are hard coded into the code. So you don't have to upload.
 
 ## 3. Cell-cell communication analysis
 
@@ -41,8 +65,8 @@ The proposed pipeline consists of the following steps:
 7. Visualising results
 
 
-Our approach offers the user flexibility in choice of parameters in the analysis workflow which includes 
-comparison of interest and various statistical 
+Our approach offers the user flexibility in choice of parameters in the analysis workflow which includes
+comparison of interest and various statistical
 
 
 
