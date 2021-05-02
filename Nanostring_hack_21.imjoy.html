@@ -1,38 +1,37 @@
 ﻿<docs lang="markdown">
-    This is a imjoy plyugin for visulization of 2D/3D UMAP dot plot and ROI images associated.
+    This is an ImJoy plyugin for 2D/3D UMAP dot plot visulization along with associated ROI images.
 
     Inspired by https://github.com/imjoy-team/example-plugins/blob/master/imjoy-plugins/HPA-UMAP.imjoy.html
 
     Developed by Anna Arutyunyan, Jordan Simbananiye and Tong LI.
+</docs>
 
-    </docs>
+<config lang="json">
+{
+"name": "Nanostring hack 21",
+"type": "window",
+"tags": [],
+"ui": "",
+"version": "0.0.1",
+"api_version": "0.0.1",
+"description": "2D/3D UMAP dot plot visulization along with associated ROI images \n Developed by Anna Arutyunyan, Jordan Simbananiye and Tong LI.",
+"icon": "photo",
+"inputs": null,
+"outputs": null,
+"requirements": [
+"https://cdn.plot.ly/plotly-latest.min.js",
+"https://cdn.jsdelivr.net/npm/papaparse@5.2.0/papaparse.min.js",
+"https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js",
+"https://unpkg.com/spectre.css/dist/spectre.min.css",
+"https://unpkg.com/spectre.css/dist/spectre-exp.min.css",
+"https://unpkg.com/spectre.css/dist/spectre-icons.min.css"],
+"dependencies": [],
+"defaults": {"w": 50, "h":20, "fullscreen": true},
+"cover": ""
+}
+</config>
 
-    <config lang="json">
-    {
-        "name": "Nanostring hack 21",
-        "type": "window",
-        "tags": [],
-        "ui": "",
-        "version": "0.0.1",
-        "api_version": "0.0.1",
-        "description": "Visulization of 2D/3D UMAP dot plot and ROI images associated \n Developed by Anna Arutyunyan, Jordan Simbananiye and Tong LI.",
-        "icon": "photo",
-        "inputs": null,
-        "outputs": null,
-        "requirements": [
-        "https://cdn.plot.ly/plotly-latest.min.js",
-        "https://cdn.jsdelivr.net/npm/papaparse@5.2.0/papaparse.min.js",
-        "https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js",
-        "https://unpkg.com/spectre.css/dist/spectre.min.css",
-        "https://unpkg.com/spectre.css/dist/spectre-exp.min.css",
-        "https://unpkg.com/spectre.css/dist/spectre-icons.min.css"],
-        "dependencies": [],
-        "defaults": {"w": 50, "h":20, "fullscreen": true},
-        "cover": ""
-    }
-    </config>
-
-    <script lang="javascript">
+<script lang="javascript">
 
     function transpose(data) {
         let result = {};
@@ -52,8 +51,8 @@
                 images: [],
                 selected_table: null,
                 tables: {
-                	"2D": "https://raw.githubusercontent.com/arutik/NanoHack21/readme_tong/data/table_for_visualisation_ROIs_2D.csv",
-                	"3D": "https://raw.githubusercontent.com/arutik/NanoHack21/readme_tong/data/table_for_visualisation_ROIs_3D.csv",
+                	"2D": "https://raw.githubusercontent.com/arutik/NanoHack21/main/data/table_for_visualisation_ROIs_2D.csv",
+                	"3D": "https://raw.githubusercontent.com/arutik/NanoHack21/main/data/table_for_visualisation_ROIs_3D.csv",
                 },
                 current_index: 0,
                 loading: true,
@@ -382,152 +381,152 @@
     }
 
     api.export(new ImJoyPlugin())
-    </script>
+</script>
 
-        <window lang="html">
-            <div id="app">
-                <header class="navbar">
-                <input id="file" style="display:none;" type="file" webkitdirectory mozdirectory msdirectory odirectory
-                        directory multiple @change="selectFileChanged" />
-                <section class="navbar-section" style="align-items:flex-start;">
-                    <a class="navbar-brand mr-2">UMAP Explorer</a>
-                    <div class="btn-group btn-group-block">
-                        <button @click="loadTable('2D')" class="btn" :class="{'btn-primary': selected_table==='2D'}">2D</button>
-                        <button @click="loadTable('3D')" class="btn" :class="{'btn-primary': selected_table==='3D'}">3D</button>
-                    </div>
-                </section>
-                <section>
-                        <label for="features">Choose feature to color clusters by:</label>
-                        <!-- Make starting app prop for this -->
-                        <select name="features" id="features-select">
-                          <option value="region_exact">region exact</option>
-                          <option value="disease_status">disease status</option>
-                          <option value="pathology">pathology</option>
-                          <option value="slidename">slide name</option>
-                        </select>
-                        <button class="btn" @click="replotWithColor()">colour</button>
-                </section>
-                </header>
-                <div class="container">
-                <div class="loading loading-lg" v-if="loading">Loading...</div>
-                <div class="columns" v-show="!loading">
-                <div id="chart" class="column col-2"></div>
-                <div id="image-container" class="column col-2">
-                    <!-- <img v-if="thumbnail" class="img-responsive rounded hpa-thumbnail" :src="thumbnail.url" :alt="thumbnail.meta.id"></img>  -->
-                    <div id="tabbed-data" v-if="images[current_index]" style="text-align:center;width:inherit;height:inherit;;">
-                      <!-- Taken from https://www.w3schools.com/howto/howto_js_tabs.asp -->
-                            <div class="tab">
-                              <button class="tablinks" @click="selectTabById(event, 'StatsSummary')">Stats Summary</button>
-                              <button class="tablinks" @click="selectTabById(event, 'cellTypeDeconv')">Cell Type Deconvolution</button>
-                            </div>
+<window lang="html">
+    <div id="app">
+	<header class="navbar">
+	<input id="file" style="display:none;" type="file" webkitdirectory mozdirectory msdirectory odirectory
+		directory multiple @change="selectFileChanged" />
+	<section class="navbar-section" style="align-items:flex-start;">
+	    <a class="navbar-brand mr-2">UMAP Explorer</a>
+	    <div class="btn-group btn-group-block">
+		<button @click="loadTable('2D')" class="btn" :class="{'btn-primary': selected_table==='2D'}">2D</button>
+		<button @click="loadTable('3D')" class="btn" :class="{'btn-primary': selected_table==='3D'}">3D</button>
+	    </div>
+	</section>
+	<section>
+		<label for="features">Choose feature to color clusters by:</label>
+		<!-- Make starting app prop for this -->
+		<select name="features" id="features-select">
+		  <option value="region_exact">region exact</option>
+		  <option value="disease_status">disease status</option>
+		  <option value="pathology">pathology</option>
+		  <option value="slidename">slide name</option>
+		</select>
+		<button class="btn" @click="replotWithColor()">colour</button>
+	</section>
+	</header>
+	<div class="container">
+	<div class="loading loading-lg" v-if="loading">Loading...</div>
+	<div class="columns" v-show="!loading">
+	<div id="chart" class="column col-2"></div>
+	<div id="image-container" class="column col-2">
+	    <!-- <img v-if="thumbnail" class="img-responsive rounded hpa-thumbnail" :src="thumbnail.url" :alt="thumbnail.meta.id"></img>  -->
+	    <div id="tabbed-data" v-if="images[current_index]" style="text-align:center;width:inherit;height:inherit;;">
+	      <!-- Taken from https://www.w3schools.com/howto/howto_js_tabs.asp -->
+		    <div class="tab">
+		      <button class="tablinks" @click="selectTabById(event, 'StatsSummary')">Stats Summary</button>
+		      <button class="tablinks" @click="selectTabById(event, 'cellTypeDeconv')">Cell Type Deconvolution</button>
+		    </div>
 
-                            <!-- Tab content -->
-                            <div id="StatsSummary" class="tabcontent">
-                                <h3>{{images[current_index].meta['region']}} ({{images[current_index].meta['segmentlabel']}})</h3>
-                                <p>Segmetation label: {{images[current_index].meta['segmentlabel']}}</p>
-                                <p>Region: {{images[current_index].meta['region']}}</p>
-                                <p>Pathology: {{ images[current_index].meta.pathology}} </p>
-                                <p>Exact location: {{images[current_index].meta['region_exact']}}</p>
-                                <p>Image id: {{ images[current_index].meta.image_file_name}} </p>
+		    <!-- Tab content -->
+		    <div id="StatsSummary" class="tabcontent">
+			<h3>{{images[current_index].meta['region']}} ({{images[current_index].meta['segmentlabel']}})</h3>
+			<p>Segmetation label: {{images[current_index].meta['segmentlabel']}}</p>
+			<p>Region: {{images[current_index].meta['region']}}</p>
+			<p>Pathology: {{ images[current_index].meta.pathology}} </p>
+			<p>Exact location: {{images[current_index].meta['region_exact']}}</p>
+			<p>Image id: {{ images[current_index].meta.image_file_name}} </p>
 
-                            </div>
+		    </div>
 
-                            <div id="cellTypeDeconv" class="tabcontent" style="width:inherit;height:inherit;"></div>
-                    </div>
-                    <h2 v-else>
-                        <br>
-                        Click on the UMAP to see the sample image.
-                    </h2>
+		    <div id="cellTypeDeconv" class="tabcontent" style="width:inherit;height:inherit;"></div>
+	    </div>
+	    <h2 v-else>
+		<br>
+		Click on the UMAP to see the sample image.
+	    </h2>
 
-                    <div class="carousel">
-                    <!-- carousel locator -->
-                    <input class="carousel-locator" v-for="(img, i) in images" :id="'slide-'+i" type="radio" name="carousel-radio" hidden="" v-model="current_index" :value="i" checked="">
+	    <div class="carousel">
+	    <!-- carousel locator -->
+	    <input class="carousel-locator" v-for="(img, i) in images" :id="'slide-'+i" type="radio" name="carousel-radio" hidden="" v-model="current_index" :value="i" checked="">
 
-                    <!-- carousel container -->
-                    <div class="carousel-container">
-                        <!-- carousel item -->
-                        <figure class="carousel-item" v-for="(img, i) in images">
-                            <img class="img-responsive rounded" :src="img.url" :alt="img.meta.image_file_name" @click="openImage(images[current_index].url)">
-                        </figure>
+	    <!-- carousel container -->
+	    <div class="carousel-container">
+		<!-- carousel item -->
+		<figure class="carousel-item" v-for="(img, i) in images">
+		    <img class="img-responsive rounded" :src="img.url" :alt="img.meta.image_file_name" @click="openImage(images[current_index].url)">
+		</figure>
 
-                    </div>
-                    <!-- carousel navigation -->
-                    <div class="carousel-nav">
-                        <label class="nav-item text-hide c-hand" v-for="(img, i) in images" :for="'slide-'+i">{{img.meta.image_file_name}}</label>
-                    </div>
-                    </div>
-                </div>
-            </div>
-            </div>
-            </div>
+	    </div>
+	    <!-- carousel navigation -->
+	    <div class="carousel-nav">
+		<label class="nav-item text-hide c-hand" v-for="(img, i) in images" :for="'slide-'+i">{{img.meta.image_file_name}}</label>
+	    </div>
+	    </div>
+	</div>
+    </div>
+    </div>
+    </div>
 
-        </window>
+</window>
 
-        <style lang="css">
-        #chart {
-            width: 800px;
-            height: 800px;
-            max-width: calc( 100% + 140px );
-            margin-left: -70px;
-        }
-        #image-container{
-            text-align: center;
-            width: 400px;
-            height: 400px;
-            max-width: 100%;
-        }
+<style lang="css">
+#chart {
+    width: 800px;
+    height: 800px;
+    max-width: calc( 100% + 140px );
+    margin-left: -70px;
+}
+#image-container{
+    text-align: center;
+    width: 400px;
+    height: 400px;
+    max-width: 100%;
+}
 
-        .carousel{
-            margin: 20px;
-        }
+.carousel{
+    margin: 20px;
+}
 
-        .hpa-thumbnail{
-            position: absolute;
-            left: 30px;
-            top: 100px;
-        }
-        /* ====================================  */
-        #tabbed-data {
-          /* border: 1px solid #ccc; */
-          border: none;
-          height: 500px;
-          width: 600px
-        }
+.hpa-thumbnail{
+    position: absolute;
+    left: 30px;
+    top: 100px;
+}
+/* ====================================  */
+#tabbed-data {
+  /* border: 1px solid #ccc; */
+  border: none;
+  height: 500px;
+  width: 600px
+}
 
-        /* Style the tab */
-        .tab {
-          overflow: hidden;
-          border: 1px solid #ccc;
-          background-color: #f1f1f1;
-        }
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
 
-        /* Style the buttons that are used to open the tab content */
-        .tab button {
-          background-color: inherit;
-          float: left;
-          border: none;
-          outline: none;
-          cursor: pointer;
-          padding: 14px 16px;
-          transition: 0.3s;
-        }
+/* Style the buttons that are used to open the tab content */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+}
 
-        /* Change background color of buttons on hover */
-        .tab button:hover {
-          background-color: #ddd;
-        }
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
 
-        /* Create an active/current tablink class */
-        .tab button.active {
-          background-color: #ccc;
-        }
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
 
-        /* Style the tab content */
-        .tabcontent {
-          display: none;
-          padding: 6px 12px;
-          border: 1px solid #ccc;
-          border: none
-        }
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border: none
+}
 
-        </style>
+</style>
