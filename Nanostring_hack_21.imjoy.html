@@ -1,0 +1,468 @@
+﻿<docs lang="markdown">
+
+This is a imjoy plyugin for visulization of 2D/3D UMAP dot plot and ROI images associated.
+
+Inspired by https://github.com/imjoy-team/example-plugins/blob/master/imjoy-plugins/HPA-UMAP.imjoy.html
+
+</docs>
+
+<config lang="json">
+{
+    "name": "Nanostring hack 21",
+    "type": "window",
+    "tags": [],
+    "ui": "",
+    "version": "0.0.1",
+    "api_version": "0.0.1",
+    "description": "Visulization of 2D/3D UMAP dot plot and ROI images associated",
+    "icon": "photo",
+    "inputs": null,
+    "outputs": null,
+    "requirements": [
+    "https://cdn.plot.ly/plotly-latest.min.js",
+    "https://cdn.jsdelivr.net/npm/papaparse@5.2.0/papaparse.min.js",
+    "https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js",
+    "https://unpkg.com/spectre.css/dist/spectre.min.css",
+    "https://unpkg.com/spectre.css/dist/spectre-exp.min.css",
+    "https://unpkg.com/spectre.css/dist/spectre-icons.min.css"],
+    "dependencies": [],
+    "defaults": {"w": 50, "h":20, "fullscreen": true},
+    "cover": ""
+}
+</config>
+
+<script lang="javascript">
+
+function transpose(data) {
+    let result = {};
+    for (let row of data) {
+        for (let [key, value] of Object.entries(row)) {
+            result[key] = result[key] || [];
+            result[key].push(value);
+        }
+    }
+    return result;
+}
+
+class ImJoyPlugin {
+    async setup() {
+        const self = this
+        this.store = {
+            images: [],
+            selected_table: null,
+            tables: {
+                "2D": "https://gist.githubusercontent.com/BioinfoTongLI/dc266bb21ffa4a7d8e45b86121d9a1cd/raw/a5de5d368d5f27b4bf2c025df0fb096215d99001/table_for_visualisation_ROIs.csv",
+                "3D": "https://gist.githubusercontent.com/BioinfoTongLI/dc266bb21ffa4a7d8e45b86121d9a1cd/raw/d61c95f79dd65f145db268ebaaba022488d5a23d/table_for_visualisation_ROIs.csv",
+            },
+            current_index: 0,
+            loading: true,
+            thumbnail: null,
+            search_text: ''
+        }
+        this.app = new Vue({
+            el: '#app',
+            data: this.store,
+            methods: {
+                loadTable(url) {
+                    this.selected_table = url;
+                    if (this.tables[url]) {
+                        url = this.tables[url]
+                    }
+                    this.loading = true;
+                    Papa.parse(url, {
+                        download: true,
+                        header: true,
+                        dynamicTyping: true,
+                        skipEmptyLines: true,
+                        error: (err, file, inputElem, reason) => {
+                            api.alert('Falied to load the table: ' + reason.toString())
+                            this.loading = false
+                            this.$forceUpdate()
+                        },
+                        complete: (results) => {
+                            for (let loc of results.data) {
+                                if (loc.region && loc.segmentLabel)
+                                    loc.info = loc.region + '(' + loc.segmentLabel + ')' + ': ' + loc.region_exact
+                                else
+                                    loc.info = loc.region_exact
+
+                            }
+
+                            console.log('===============>', results)
+                            self.umap_data = results.data
+                            try {
+                                self.updateUmap(self.umap_data)
+                            } finally {
+                                this.loading = false
+                                this.$forceUpdate()
+                            }
+
+                        }
+                    })
+                },
+                openImage(url) {
+                    api.utils.openUrl(url)
+                },
+                showImage(obj) {
+                    this.images.push(obj)
+                    if (this.images.length > 5) {
+                        this.images.shift()
+                    }
+                    this.current_index = this.images.length - 1
+                },
+                showThumbnail(obj) {
+                    this.thumbnail = obj
+                },
+                async selectFileChanged(event) {
+                    const file = event.target.files[0];
+                    if (file) {
+                        this.loadTable(file, )
+                    }
+                },
+                async selectTabById(evt, identifier) {
+                    // Declare all variables
+                    var i, tabcontent, tablinks;
+    
+                    // Get all elements with class="tabcontent" and hide them
+                    tabcontent = document.getElementsByClassName("tabcontent");
+                    for (i = 0; i < tabcontent.length; i++) {
+                        tabcontent[i].style.display = "none";
+                    }
+    
+                    // Get all elements with class="tablinks" and remove the class "active"
+                    tablinks = document.getElementsByClassName("tablinks");
+                    for (i = 0; i < tablinks.length; i++) {
+                        tablinks[i].className = tablinks[i].className.replace(" active", "");
+                    }
+    
+                    // Show the current tab, and add an "active" class to the button that opened the tab
+                    document.getElementById(identifier).style.display = "block";
+                    evt.currentTarget.className += " active";
+                },
+
+                async rowToPlotlyPoints(row){
+                    // Only take CT_deconv_ fields
+                    var stackData = []
+                        const EMPTY_STRING= ""
+                    var roiLabel = row[""]
+                    var columnPrefix = "ct_deconv_"
+                    for (const [key, val] of Object.entries(row)){
+
+                    if (key.includes(columnPrefix) && val > 0){
+                        stackData.push(
+                            {
+                                name: key.replace(columnPrefix, EMPTY_STRING),
+                                x: [roiLabel],
+                                y: [val],
+                                type: 'bar'
+                            }
+                        )}
+                    
+                    }
+
+                    return stackData
+                },
+
+                async barPlot(images) {
+                    var cellTypeDeconv = document.getElementById('cellTypeDeconv')
+                    // Take object with only cell type data and turn into objects like `trace1` `trace2`
+                    // Explodes single row
+                    // https://plotly.com/javascript/bar-charts/#stacked-bar-chart
+                    var currentImageData = images[images.length - 1]
+                    var stackedDataPoints = await this.rowToPlotlyPoints(currentImageData.meta)
+
+                    var layout = {barmode: 'stack'}
+                    var barPlot =  await Plotly.newPlot( cellTypeDeconv, stackedDataPoints, layout, {responsive: true});   
+                }
+            }
+        })
+    }
+
+    async plot(data) {
+        document.getElementById('chart').innerHTML = ''
+        const updatemenus = [{
+            buttons: [{
+                    args: [{
+                        'marker.size': 16
+                    }],
+                    label: 'marker size: 16',
+                    method: 'restyle'
+                },
+                {
+                    args: [{
+                        'marker.size': 8
+                    }],
+                    label: 'marker size: 8',
+                    method: 'restyle'
+                },
+                {
+                    args: [{
+                        'marker.size': 4
+                    }],
+                    label: 'marker size: 4',
+                    method: 'restyle'
+                },
+                {
+                    args: [{
+                        'marker.size': 2
+                    }],
+                    label: 'marker size: 2',
+                    method: 'restyle'
+                },
+                {
+                    args: [{
+                        'marker.size': 1
+                    }],
+                    label: 'marker size: 1',
+                    method: 'restyle'
+                }
+            ],
+            direction: 'down',
+            pad: {
+                'r': 0,
+                't': 0
+            },
+            showactive: true,
+            type: 'dropdown',
+            x: 0.8,
+            xanchor: 'left',
+            y: 1.05,
+            yanchor: 'top'
+        }]
+
+        const layout = {
+            hovermode: 'closest',
+            title: 'NanoString GeoMx® kidney UMAP explorer ( images: ' + data[0].x.length + ')',
+            xaxis: {
+                showticklabels: false,
+                nticks: 10,
+                domain: [-20, 20],
+                range: [-20, 20],
+                zeroline: false
+            },
+            yaxis: {
+                showticklabels: false,
+                nticks: 10,
+                domain: [-20, 20],
+                range: [-20, 20],
+                zeroline: false
+            },
+            updatemenus: updatemenus
+        }
+
+        this.umap_chart = await Plotly.newPlot('chart', data, layout, {
+            responsive: true
+        })
+
+        window.addEventListener('resize', () => {
+            Plotly.relayout('chart', {
+                width: document.getElementById('chart').clientWidth,
+                height: document.getElementById('chart').clientHeight
+            })
+        });
+
+        // let win=null;
+        document.getElementById('chart').on('plotly_click', async (data) => {
+            for(var i=0; i < data.points.length; i++){
+                console.log('====>', data.points[i].customdata)
+                const id = data.points[i].customdata.image_file_name
+                if(!data.points[i].customdata.region){
+                    this.app.images = []
+                    api.showStatus(id + ':' + data.points[i].customdata.region_exact)
+                    continue
+                }
+                const image_base_url = 'https://nanohack21storage.blob.core.windows.net'
+                console.log(image_base_url + '/compressed-roi/' + encodeURIComponent(data.points[i].customdata.image_file_name) + '.png')
+                this.app.showImage(
+                    {
+                        url: image_base_url + '/compressed-roi/' + encodeURIComponent(data.points[i].customdata.image_file_name) + '.png',
+                        meta: data.points[i].customdata
+                    }
+                )
+                const screen_width = window.innerWidth
+                    || document.documentElement.clientWidth
+                    || document.body.clientWidth;
+                if(screen_width<1024) window.scrollTo(0,document.body.scrollHeight);
+            }
+            //api.alert('Closest point clicked:\n\n'+pts);
+        });
+        document.getElementById('chart').on('plotly_click', async () => {
+            var captured = await this.app.barPlot(this.app.images)
+        });
+    }
+
+    async updateUmap(table) {
+
+        if (table.length <= 0) {
+            await api.alert('No image found.')
+            return
+        }
+        await api.showMessage(table.length + ' images found.')
+
+        const dataObj = transpose(table)
+
+        // for 'region_exact' variable
+        const COLORS_REGION = {
+          "distal tubule": "#f44336",
+          "glomerulus": "#009e9e",
+          "proximal tubule": "#9c27b0"
+        };
+        
+        const data = [{
+            type: dataObj.z_3d_umap ? "scatter3d" : "scattergl",
+            mode: "markers",
+            marker: {
+                size: dataObj.z_3d_umap ? 3 : 5,
+                color: dataObj.region_exact.map(code => COLORS_REGION[code])
+            },
+            // text: dataObj.info,
+            text: dataObj.segmentLabel,
+            x: dataObj.z_3d_umap ? dataObj.x_3d_umap : dataObj.x_2d_umap,
+            y: dataObj.z_3d_umap ? dataObj.y_3d_umap : dataObj.y_2d_umap,
+            z: dataObj.z_3d_umap,
+            customdata: table
+        }]
+        this.plot(data)
+    }
+    async run(my) {
+        await this.app.loadTable('2D')
+    }
+}
+
+api.export(new ImJoyPlugin())
+</script>
+
+    <window lang="html">
+        <div id="app">
+            <header class="navbar">
+            <input id="file" style="display:none;" type="file" webkitdirectory mozdirectory msdirectory odirectory
+                    directory multiple @change="selectFileChanged" />
+            <section class="navbar-section">
+                <a class="navbar-brand mr-2">UMAP Explorer</a>
+                <div class="btn-group btn-group-block">
+                    <button @click="loadTable('2D')" class="btn" :class="{'btn-primary': selected_table==='2D'}">2D</button>
+                    <button @click="loadTable('3D')" class="btn" :class="{'btn-primary': selected_table==='3D'}">3D</button>
+                </div> 
+                
+            </section>
+            </header>
+            <div class="container">
+            <div class="loading loading-lg" v-if="loading">Loading...</div>
+            <div class="columns" v-show="!loading">
+            <div id="chart" class="column col-2"></div>
+            <div id="image-container" class="column col-2">
+                <!-- <img v-if="thumbnail" class="img-responsive rounded hpa-thumbnail" :src="thumbnail.url" :alt="thumbnail.meta.id"></img>  -->
+                <div id="tabbed-data" v-if="images[current_index]" style="text-align:center;width:inherit;height:inherit;;">
+                  <!-- Taken from https://www.w3schools.com/howto/howto_js_tabs.asp -->
+                        <div class="tab">
+                          <button class="tablinks" @click="selectTabById(event, 'StatsSummary')">Stats Summary</button>
+                          <button class="tablinks" @click="selectTabById(event, 'cellTypeDeconv')">Cell Type Deconvolution</button>
+                        </div>
+        
+                        <!-- Tab content -->
+                        <div id="StatsSummary" class="tabcontent">
+                            <h3>{{images[current_index].meta['region']}} ({{images[current_index].meta['segmentLabel']}})</h3>
+                            <p>Segmetation label: {{images[current_index].meta['segmentLabel']}}</p>
+                            <p>Region: {{images[current_index].meta['region']}}</p>
+                            <p>Exact location: {{images[current_index].meta['region_exact']}}</p>
+                            <p>Image id: {{ images[current_index].meta.image_file_name}} </p>          
+                        </div>
+        
+                        <div id="cellTypeDeconv" class="tabcontent" style="width:inherit;height:inherit;"></div>
+                </div>
+                <h2 v-else>
+                    <br>
+                    Click on the UMAP to see the sample image.
+                </h2>
+                
+                <div class="carousel">
+                <!-- carousel locator -->
+                <input class="carousel-locator" v-for="(img, i) in images" :id="'slide-'+i" type="radio" name="carousel-radio" hidden="" v-model="current_index" :value="i" checked="">
+                
+                <!-- carousel container -->
+                <div class="carousel-container">
+                    <!-- carousel item -->
+                    <figure class="carousel-item" v-for="(img, i) in images">
+                        <img class="img-responsive rounded" :src="img.url" :alt="img.meta.image_file_name" @click="openImage(images[current_index].url)">
+                    </figure>
+    
+                </div>
+                <!-- carousel navigation -->
+                <div class="carousel-nav">
+                    <label class="nav-item text-hide c-hand" v-for="(img, i) in images" :for="'slide-'+i">{{img.meta.image_file_name}}</label>
+                </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+    
+    </window>
+    
+    <style lang="css">
+    #chart {
+        width: 800px;
+        height: 800px;
+        max-width: calc( 100% + 140px );
+        margin-left: -70px;
+    }
+    #image-container{
+        text-align: center;
+        width: 400px;
+        height: 400px;
+        max-width: 100%;
+    }
+    
+    .carousel{
+        margin: 20px;
+    }
+    
+    .hpa-thumbnail{
+        position: absolute;
+        left: 30px;
+        top: 100px;
+    }
+    /* ====================================  */
+    #tabbed-data {
+      /* border: 1px solid #ccc; */
+      border: none;
+      height: 500px;
+      width: 600px
+    }
+    
+    /* Style the tab */
+    .tab {
+      overflow: hidden;
+      border: 1px solid #ccc;
+      background-color: #f1f1f1;
+    }
+    
+    /* Style the buttons that are used to open the tab content */
+    .tab button {
+      background-color: inherit;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      transition: 0.3s;
+    }
+    
+    /* Change background color of buttons on hover */
+    .tab button:hover {
+      background-color: #ddd;
+    }
+    
+    /* Create an active/current tablink class */
+    .tab button.active {
+      background-color: #ccc;
+    }
+    
+    /* Style the tab content */
+    .tabcontent {
+      display: none;
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border: none
+    }
+    </style>
