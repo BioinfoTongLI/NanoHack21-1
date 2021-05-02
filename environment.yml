@@ -11,3 +11,4 @@ dependencies:
   - zarr
   - pip:
     - cellphonedb
+    - pyvis
