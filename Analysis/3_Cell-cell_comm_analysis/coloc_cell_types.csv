@@ -1,0 +1,105 @@
+,0,1
+0,B cell,Mesangial_cells
+1,B cell,MNP
+2,Mesangial_cells,Nephron_epithelium
+3,Loop_of_Henle,Mast cell
+4,Distal_tubules_and_collecting_duct,NK cell
+5,MNP,Podocytes
+6,Loop_of_Henle,Nephron_epithelium
+7,DC,Podocytes
+8,Distal_tubules_and_collecting_duct,Nephron_epithelium
+9,MNP,Private
+10,Endothelium,Mesangial_cells
+11,Endothelium,MNP
+12,DC,Private
+13,B cell,CD8 T cell
+14,B cell,Loop_of_Henle
+15,B cell,DC
+16,B cell,Nephron_epithelium
+17,CD8 T cell,Endothelium
+18,Mast cell,Private
+19,Loop_of_Henle,Neutrophil
+20,NK cell,Neutrophil
+21,DC,MNP
+22,Distal_tubules_and_collecting_duct,Mesangial_cells
+23,Nephron_epithelium,Neutrophil
+24,Endothelium,Loop_of_Henle
+25,B cell,Neutrophil
+26,Endothelium,Nephron_epithelium
+27,MNP,NK cell
+28,DC,NK cell
+29,MNP,Proximal_tubular_cells
+30,Distal_tubules_and_collecting_duct,Mast cell
+31,DC,Proximal_tubular_cells
+32,Endothelium,Neutrophil
+33,DC,Distal_tubules_and_collecting_duct
+34,DC,Nephron_epithelium
+35,Distal_tubules_and_collecting_duct,Endothelium
+36,Mast cell,NK cell
+37,NK cell,Private
+38,Distal_tubules_and_collecting_duct,Loop_of_Henle
+39,B cell,Mast cell
+40,Mast cell,Proximal_tubular_cells
+41,Private,Proximal_tubular_cells
+42,Mesangial_cells,Neutrophil
+43,CD8 T cell,Proximal_tubular_cells
+44,B cell,Endothelium
+45,Mast cell,Podocytes
+46,Nephron_epithelium,Private
+47,CD8 T cell,Podocytes
+48,MNP,Mesangial_cells
+49,Distal_tubules_and_collecting_duct,Neutrophil
+50,Endothelium,Mast cell
+51,DC,Mesangial_cells
+52,Mast cell,Mesangial_cells
+53,Neutrophil,Podocytes
+54,CD8 T cell,MNP
+55,MNP,Mast cell
+56,Neutrophil,Private
+57,DC,Mast cell
+58,Mesangial_cells,Private
+59,NK cell,Proximal_tubular_cells
+60,MNP,Nephron_epithelium
+61,Loop_of_Henle,Podocytes
+62,DC,Loop_of_Henle
+63,NK cell,Podocytes
+64,Loop_of_Henle,Private
+65,Nephron_epithelium,Proximal_tubular_cells
+66,Distal_tubules_and_collecting_duct,Private
+67,CD8 T cell,NK cell
+68,Mast cell,Nephron_epithelium
+69,Nephron_epithelium,Podocytes
+70,CD8 T cell,Distal_tubules_and_collecting_duct
+71,CD8 T cell,DC
+72,CD8 T cell,Nephron_epithelium
+73,MNP,Neutrophil
+74,B cell,Private
+75,DC,Neutrophil
+76,Loop_of_Henle,MNP
+77,Podocytes,Private
+78,Neutrophil,Proximal_tubular_cells
+79,Mesangial_cells,Proximal_tubular_cells
+80,Endothelium,Private
+81,CD8 T cell,Mesangial_cells
+82,Loop_of_Henle,NK cell
+83,Mesangial_cells,Podocytes
+84,Loop_of_Henle,Proximal_tubular_cells
+85,Distal_tubules_and_collecting_duct,Proximal_tubular_cells
+86,DC,Endothelium
+87,NK cell,Nephron_epithelium
+88,B cell,NK cell
+89,Distal_tubules_and_collecting_duct,Podocytes
+90,CD8 T cell,Mast cell
+91,B cell,Proximal_tubular_cells
+92,B cell,Distal_tubules_and_collecting_duct
+93,Podocytes,Proximal_tubular_cells
+94,B cell,Podocytes
+95,CD8 T cell,Loop_of_Henle
+96,Endothelium,NK cell
+97,Loop_of_Henle,Mesangial_cells
+98,Distal_tubules_and_collecting_duct,MNP
+99,Endothelium,Proximal_tubular_cells
+100,Mesangial_cells,NK cell
+101,Mast cell,Neutrophil
+102,Endothelium,Podocytes
+103,CD8 T cell,Neutrophil

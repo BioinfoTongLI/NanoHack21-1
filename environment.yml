@@ -7,5 +7,6 @@ dependencies:
   - dask-image
   - numpy
   - scikit-image
-  - pip
   - pip:
+    - cellphonedb
+    - pyvis
