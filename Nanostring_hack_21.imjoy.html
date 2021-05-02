@@ -427,8 +427,10 @@
                                 <h3>{{images[current_index].meta['region']}} ({{images[current_index].meta['segmentlabel']}})</h3>
                                 <p>Segmetation label: {{images[current_index].meta['segmentlabel']}}</p>
                                 <p>Region: {{images[current_index].meta['region']}}</p>
+                                <p>Pathology: {{ images[current_index].meta.pathology}} </p>    
                                 <p>Exact location: {{images[current_index].meta['region_exact']}}</p>
-                                <p>Image id: {{ images[current_index].meta.image_file_name}} </p>          
+                                <p>Image id: {{ images[current_index].meta.image_file_name}} </p>    
+
                             </div>
             
                             <div id="cellTypeDeconv" class="tabcontent" style="width:inherit;height:inherit;"></div>
