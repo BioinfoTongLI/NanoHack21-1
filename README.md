@@ -14,6 +14,8 @@ To perform the analyses included in this solution, the user will need to have th
 - NanoString GeoMx® human kidney dataset from [here](http://nanostring-public-share.s3-website-us-west-2.amazonaws.com/) (or other NanoString GeoMx® dataset)
 - Signle cell RNA sequencing (scRNA-seq) reference dataset of human kidney from [Young et al., Science 2018](https://science.sciencemag.org/content/361/6402/594.editor-summary) (or other scRNA-seq reference dataset)
 
+![](./data/scheme.png)
+
 # Prerequisite
 ## Creating conda env
 
