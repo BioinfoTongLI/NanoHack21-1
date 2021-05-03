@@ -86,7 +86,7 @@ To explore cell-cell communication networks dysregulated in abnormal glomeruli w
 You can highlight a network of communication events that involves a certain cell type by clicking the node with that cell type in the title like so:
 ![](./data/graph_2.png)
 
-You can also clink on a specific edge connecting a pair of cell types and view the dysregulated interactions like so:
+You can also click on a specific edge connecting a pair of cell types and view the dysregulated interactions like so:
 ![](./data/graph_1.png)
 
 ____________________________________________________________________________________________________________________________________________________________________
