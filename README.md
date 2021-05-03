@@ -1,8 +1,8 @@
 # NanoHack21
 NanoString Spatial Omics Hackathon 2021
 
-Our solution offers a flexible analysis and interactive visulisation workflow for exploration of the NanoString GeoMx® Digital Spatial Profiler data.
-Here we demonstrate it on the NanoString GeoMx® human kidney dataset in conjunction with the publicly available signle cell RNA sequencing (scRNA-seq) reference dataset of human kidney from [Young et al., Science 2018](https://science.sciencemag.org/content/361/6402/594.editor-summary). This approach can also be used for other such datasets.
+Our solution offers a flexible analysis and interactive visualisation workflow for exploration of the NanoString GeoMx® Digital Spatial Profiler data.
+Here we demonstrate it on the NanoString GeoMx® human kidney dataset in conjunction with the publicly available single cell RNA sequencing (scRNA-seq) reference dataset of human kidney from [Young et al., Science 2018](https://science.sciencemag.org/content/361/6402/594.editor-summary). This approach can also be used for other such datasets.
 
 The solution consists of:
 1. Unbiased analysis of the NanoString GeoMx® whole transcriptome dataset
