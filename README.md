@@ -31,7 +31,7 @@ For better user experience when browsing the image data, all ROI images (.png) w
 
 ### 1.2 UMAP generation
 
-Based on transcriptomic data, we have generated both 2D and 3D UMAPs using Scanpy (https://scanpy.readthedocs.io/en/stable/) and Anndata (https://anndata.readthedocs.io/en/latest/) packages in Python (see details in `Analysis/1_transcriptome_analysis.ipynb`). For all dots in the UMAP, their corresponding image names are saved as a column inside the csv files (2D and 3D). These CSV files are in the `data` directory and wil be read remotely by our ImJoy plugin.
+Based on transcriptomic data, we have generated both 2D and 3D UMAPs using Scanpy (https://scanpy.readthedocs.io/en/stable/) and Anndata (https://anndata.readthedocs.io/en/latest/) packages in Python (see details in `Analysis/1_transcriptome_analysis.ipynb`). For all dots in the UMAP, their corresponding image names are saved as a column inside the csv files (2D and 3D). These CSV files are in the `data` directory and will be read remotely by our ImJoy plugin.
 
 
 ## 2. ImJoy plugin
