@@ -70,7 +70,7 @@ The proposed pipeline consists of the following steps:
     (here the user can focus on a particular comparison of interest, in this demonstrative workflow we compare abnormal and healthy glomeruli, as annotated by pathology in NanoString dataset, to explore potential dysregulation of cell-cell communication networks in abnormal glomeruli)
 
 
-6. Intersecting the DE genes from (5) with all possible interactions between cell types colocated in space as inferred from prior cell type deconvolution of each NanoString ROI using scRNA-seq reference dataset (notebook S5)
+6. Intersecting the DE genes from (5) with all possible interactions between cell types (including self interactions) colocated in space as inferred from prior cell type deconvolution of each NanoString ROI using scRNA-seq reference dataset (notebook S5)
 7. Visualising results and producing HTML files with interactive cell-cell communication networks for user to explore (notebook S6)
 
 This workflow is conveniently packaged into one master notebook `Analysis/3_Cell-cell_comm_analysis/1_Master_notebook_cellphone_workflow.ipynb` that performs all these steps easily. 
